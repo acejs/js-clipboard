@@ -1,0 +1,16 @@
+{
+  "parser": "@typescript-eslint/parser", // 指定解析器
+  "plugins": ["@typescript-eslint"], // 指定插件
+  "parserOptions": {
+    "project": "./tsconfig.json"
+  },
+  "extends": [
+    "plugin:@typescript-eslint/recommended",
+    "prettier",
+    "plugin:prettier/recommended",
+    "prettier/@typescript-eslint"
+  ],
+  "rules": {
+    "@typescript-eslint/interface-name-prefix": ["error", "always"]
+  }
+}
