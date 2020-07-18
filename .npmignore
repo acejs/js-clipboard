@@ -1,6 +1,8 @@
 node_modules
+src
 .editorconfig
-.eslintrc.js
+.eslintrc.json
+.eslintignore
 .prettierrc
 .browserslistrc
 
@@ -9,3 +11,7 @@ public
 
 *.config.js
 tsconfig.json
+
+publish.sh
+test
+coverage

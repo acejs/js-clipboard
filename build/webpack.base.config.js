@@ -20,7 +20,8 @@ module.exports = {
           {
             loader: 'ts-loader',
             options: {
-              transpileOnly: true // 编译时不进行类型检查
+              transpileOnly: true, // 编译时不进行类型检查
+              configFile: path.resolve(__dirname, '../tsconfig.json')
             }
           }
         ],

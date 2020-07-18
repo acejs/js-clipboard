@@ -1,33 +1,76 @@
+import { isEditableElement } from './utils'
 /**
  * navigator.clipboard
  * 	Chrome: 需要在https的环境下才支持  clipboard-read / clipboard-write
  * 	Firefox: 出于安全考虑 不支持 clipboard-read / clipboard-write 需要降级使用 document.execCommand
  * 	Safari: 都不支持
  *
- * document.execCommand('copy')
- * This feature is obsolete. Although it may still work in some browsers,
- * its use is discouraged since it could be removed at any time. Try to avoid using it.
- * 都支持
- * 该方法已废弃，但是浏览器目前都支持 作为兼容的处理方案
+ * typescript 类型检查 不支持 clipboard-read / clipboard-write
  */
 // window.isSecureContext
-class JSClipboard {
+class Clipboard {
   /**
-   * 检测 clipboard-write 权限
+   * 复制
+   * @param target 目标文字 或者 页面元素
    */
-  private checkWritePermission(): void {
-    // return navigator.clipboard.
+  async copy(target: string | HTMLElement): Promise<string> {
+    let text
+    if (typeof target === 'string') {
+      text = target
+    } else if (isEditableElement(target)) {
+      text = target.value
+    } else {
+      text = target.innerText
+    }
+    try {
+      await navigator.clipboard.writeText(text)
+    } catch {
+      return Promise.reject('denied')
+    }
+    return text
   }
 
-  copy(target: string) {}
+  /**
+   * 剪切
+   * @param selector 目标元素
+   */
+  async cut(selector: HTMLElement): Promise<string> {
+    try {
+      const text = await this.copy(selector)
+      if (isEditableElement(selector)) {
+        selector.value = ''
+      } else {
+        selector.innerText = ''
+      }
+      return text
+    } catch (error) {
+      return Promise.reject(error)
+    }
+  }
 
   /**
-   * avigator.clipboard.writeText
-   * @param target 目标文字
+   * 粘贴
+   * @param selector 页面元素
    */
-  private clipCopy(target: string) {}
+  async paste(selector?: HTMLElement): Promise<string> {
+    let text
+    try {
+      text = await navigator.clipboard.readText()
+    } catch {
+      return Promise.reject('denied')
+    }
 
-  paste() {}
+    // 将内容写进目标元素
+    if (selector) {
+      if (isEditableElement(selector)) {
+        selector.value = text
+      } else {
+        selector.innerText = text
+      }
+    }
+
+    return text
+  }
 }
 
-export default JSClipboard
+export default new Clipboard()
