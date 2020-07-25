@@ -140,17 +140,19 @@ class JSClipboard {
     function full(event: ClipboardEvent, text: string) {
       event.preventDefault()
 
-      let copy: string
+      let copy = ''
       const activeElement = document.activeElement as HTMLElement
 
       // 兼容 Firefox 处理
       if (isEditableElement(activeElement)) {
-        copy = activeElement.value.substring(
-          activeElement.selectionStart!,
-          activeElement.selectionEnd!
-        )
+        const start = activeElement.selectionStart
+        const end = activeElement.selectionEnd
+        if (start !== null && end !== null) {
+          copy = activeElement.value.substring(start, end)
+        }
       } else {
-        copy = window.getSelection()?.toString()!
+        const selection = window.getSelection()
+        selection && selection.toString()
       }
 
       const final = copy === '' ? copy : copy + text

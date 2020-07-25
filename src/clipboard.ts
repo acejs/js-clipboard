@@ -1,4 +1,5 @@
 import { isEditableElement } from './utils'
+
 /**
  * navigator.clipboard
  * 	Chrome: 需要在https的环境下才支持  clipboard-read / clipboard-write
